@@ -3,8 +3,8 @@
 #                fetch through the webpage (inspect html code)
 #                get desired data (check for tags and their text data)
 #                print that info
-#				 do similar sequence for the country
-#				 **schedule for daily run at specific time using Windows task scheduler
+#		 do similar sequence for the country
+#		 **schedule for daily run at specific time using Windows task scheduler
 
 import requests
 from bs4 import BeautifulSoup
@@ -16,7 +16,7 @@ def covid_world():
 	#data 
 	resp1=requests.get(url1) 
 	
-	#http_respone 200 means OK status 
+	#http_respone 200 
 	if resp1.status_code==200: 
 		print('Successfully connected to the Worldometer website')
 		print('\nJust a moment (gathering data)...\n')
