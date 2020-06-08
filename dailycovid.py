@@ -1,71 +1,53 @@
 # Program for printing daily updated count of coronavirus cases
-# Pseudocode:    check worldometer website
-#                fetch through the webpage (inspect html code)
-#                get desired data (check for tags and their text data)
-#                print that info
-#		 do similar sequence for the country
-#		 **schedule for daily run at specific time using Windows task scheduler
+# Pseudocode:    
+# check worldometer website
+# fetch through the webpage (inspect html code)
+# get desired data (check for tags and their text data)
+# print that info
+# do similar sequence for the country
+# **schedule for daily run at specific time using Windows task scheduler
 
 import requests
 from bs4 import BeautifulSoup
 
-def covid_world():
-	# the website we want to open	 
-	url1='https://www.worldometers.info/coronavirus/'
-	
-	#data 
-	resp1=requests.get(url1) 
-	
-	#http_respone 200 
-	if resp1.status_code==200: 
-		print('Successfully connected to the Worldometer website')
-		print('\nJust a moment (gathering data)...\n')
+print('\n====================================================') # just for layout
+print("Today's update on total number of Coronavirus cases:\n") # double quote because single quote is present in the sentence
 
-		# Using Python built-in HTML parser
-		soup1=BeautifulSoup(resp1.text,'html.parser')
+# function that'll take website url and the name of the country as parameters
+# this will save us from writing code for every html page of the country
 
-		# info should be the list which contains all the text info
-
-		info1=soup1.find('div',{'style':'margin-top:15px'})
-		
-        #now we want to print only the text part of the HTML tag data
-		#find all the elements of that particular HTML tag
-		
-		for i in info1.findAll('span'):
-			#now store this data as text into a variable
-			total_cases = i.text
-			print('Data gathering complete.')
-			print('\n====================================================')
-			print('Current Worldwide Coronavirus Cases: ', total_cases)
-			print('====================================================')
-	else:
-		print('Error')
-
-def covid_india(): 
+def covid_cases(url, country):
 	 
-	url2='https://www.worldometers.info/coronavirus/country/india/'
+	resp=requests.get(url)
 	
-	resp2=requests.get(url2) 
-	
-	if resp2.status_code==200: 
+	if resp.status_code==200: # http respone 200 means OK status 
 		
-		soup2=BeautifulSoup(resp2.text,'html.parser')
+		soup = BeautifulSoup(resp.text,'html.parser') # using python built-in HTML parser
 
-		info2=soup2.find('div',{'style':'margin-top:15px'})
+		# info should be the list which contains all the text information
+		# check carefully through the html code and find tags that contain desired information
+
+		info=soup.find('div',{'style':'margin-top:15px'})
 		
-		for i in info2.findAll('span'):
+                # now we want to print only the text part (i.e the count of cases) of the HTML tag data
+		# find all the elements of that particular HTML tag
+		
+		for i in info.findAll('span'):
+			total_cases = i.text # store this data as text into a variable
 			
-			total_india = i.text
-			print('Coronavirus Cases in India: ', total_india)
-			print('====================================================')
+			print(country, total_cases)
+			print('====================================================') # just for layout
 	else:
 		print('Error')
 
-covid_world()
-covid_india()
+covid_cases('https://www.worldometers.info/coronavirus/', 'Current Worldwide Coronavirus Cases: ')
+covid_cases('https://www.worldometers.info/coronavirus/country/india/', 'Coronavirus Cases in India: ')
 
-#display date and time of updation
+# single function with multiple urls of multiple countries can be done but this seemed easy to me
+# now, display date and time of updation so that we know the data is latest
+
 import datetime
+
 now = datetime.datetime.now()
 print('Updated on: ', now.strftime('%d/%m/%Y %H:%M:%S'))
-input('\nPress ENTER to exit')
+input('\nPress ENTER to exit') # old technique
